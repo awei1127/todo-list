@@ -29,6 +29,7 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// 根目錄
 app.get('/', (req, res) => {
   Todo.find()
     .lean()
@@ -36,18 +37,28 @@ app.get('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// 新增頁面
 app.get('/todos/new', (req, res) => {
   res.render('new')
 })
 
+// edit頁面
+app.get('/todos/:id/edit', (req, res) => {
+  Todo.findById(req.params.id)
+    .lean()
+    .then(todo => { res.render('edit', { todo }) })
+    .catch(error => console.log(error))
+})
+
+// detail頁面
 app.get('/todos/:id', (req, res) => {
   Todo.findById(req.params.id)
     .lean()
     .then(todo => { res.render('detail', { todo }) })
     .catch(error => console.log(error))
-
 })
 
+// 新增todo
 app.post('/todos', (req, res) => {
   const name = req.body.name             // 從 req.body 拿出表單裡的 name 資料
   const todo = new Todo({
@@ -58,6 +69,22 @@ app.post('/todos', (req, res) => {
     .catch(error => { console.log(error) })
 })
 
+// 修改特定todo
+app.post('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+  const name = req.body.name             // 從 req.body 拿出表單裡的 name 資料
+  return Todo.findById(id)
+    .then(todo => {
+      todo.name = name
+      return todo.save()
+    })
+    .then(() => {
+      res.redirect(`/todos/${id}`)
+    })
+    .catch(error => console.log(error))
+})
+
+// 執行並監聽
 app.listen(port, () => {
   console.log(`Express server is listening on http://localhost:${port}`)
 })
