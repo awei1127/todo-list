@@ -58,6 +58,15 @@ app.get('/todos/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// delete路由
+app.post('/todos/:id/delete', (req, res) => {
+  const id = req.params.id
+  Todo.findById(id)
+    .then(todo => todo.remove())
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+})
+
 // 新增todo
 app.post('/todos', (req, res) => {
   const name = req.body.name             // 從 req.body 拿出表單裡的 name 資料

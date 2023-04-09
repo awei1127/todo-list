@@ -1,5 +1,8 @@
 <h2>Hello world! 這是 detail id是 {{ todo._id }}</h2>
 
 <p>{{ todo.name }}</p>
-<a href="/todos/{{ todo._id }}/edit">edit</a><!-- 加入這行 -->
+<a href="/todos/{{ todo._id }}/edit">Edit</a>
+<form action="/todos/{{ todo._id }}/delete" method="POST" style="display: inline;">
+  <button type="submit">Delete</button>
+</form>
 <a href="/">back</a>
