@@ -1,8 +1,14 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const Todo = require('./models/todo')
+
+const exphbs = require('express-handlebars')
 
 const mongoose = require('mongoose')
+
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
+app.set('view engine', 'handlebars')
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -22,7 +28,10 @@ db.once('open', () => {
 })
 
 app.get('/', (req, res) => {
-  res.send('This is index page')
+  Todo.find()
+    .lean()
+    .then(todos => res.render('index', { todos }))
+    .catch(error => console.error(error))
 })
 
 app.listen(port, () => {
