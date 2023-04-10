@@ -2,15 +2,15 @@ const express = require('express')
 const app = express()
 const port = 3000
 const Todo = require('./models/todo')
-
 const exphbs = require('express-handlebars')
-
 const mongoose = require('mongoose')
 const todo = require('./models/todo')
+const methodOverride = require('method-override')
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -60,7 +60,7 @@ app.get('/todos/:id', (req, res) => {
 })
 
 // delete路由
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   Todo.findById(id)
     .then(todo => todo.remove())
@@ -80,7 +80,7 @@ app.post('/todos', (req, res) => {
 })
 
 // 修改特定todo
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   const { name, isDone } = req.body         // 從 req.body 拿出表單裡的資料
   return Todo.findById(id)
