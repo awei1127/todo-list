@@ -67,7 +67,7 @@ app.post('/todos/:id/delete', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// 新增todo
+// 新增todo路由
 app.post('/todos', (req, res) => {
   const name = req.body.name             // 從 req.body 拿出表單裡的 name 資料
   const todo = new Todo({
@@ -81,10 +81,11 @@ app.post('/todos', (req, res) => {
 // 修改特定todo
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id
-  const name = req.body.name             // 從 req.body 拿出表單裡的 name 資料
+  const { name, isDone } = req.body         // 從 req.body 拿出表單裡的資料
   return Todo.findById(id)
     .then(todo => {
       todo.name = name
+      todo.isDone = isDone === 'on'
       return todo.save()
     })
     .then(() => {
