@@ -5,8 +5,11 @@
   <li class="list-group-item">
     <div class="row">
       <div class="col-md-auto me-auto">
-        <input type="checkbox" name="isDone" {{#if this.isDone }} checked {{/if}} disabled>
-        {{ this.name }}
+        <input style="vertical-align: middle;" type="checkbox" name="isDone" {{#if this.isDone }} checked {{/if}}
+          disabled>
+        <h4 style="display: inline; vertical-align: middle;">
+          {{ this.name }}
+        </h4>
       </div>
       <div class="col-md-auto">
         <a class="btn btn-secondary" href="/todos/{{ this._id }}">Detail</a>
