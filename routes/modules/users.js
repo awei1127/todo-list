@@ -11,7 +11,7 @@ router.get('/login', (req, res) => {
   res.render('login')
 })
 
-// 加入 middleware，驗證 request 登入狀態
+// 送出登入資訊。加入 middleware，驗證 request 登入狀態
 router.post('/login',
   passport.authenticate('local', {
     successRedirect: '/',
@@ -37,6 +37,12 @@ router.post('/register', (req, res) => {
         .catch(error => console.log(error))
     }
   })
+})
+
+// 登出請求
+router.get('/logout', (req, res) => {
+  req.logout()
+  res.redirect('/users/login')
 })
 
 module.exports = router
