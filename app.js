@@ -22,6 +22,14 @@ app.use(session({
 }))
 // 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
 usePassport(app)
+
+// 把參數放到res.locals以提供給渲染畫面用
+app.use((req, res, next) => {
+  console.log(req.user)
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
 app.use(routes)
 
 
