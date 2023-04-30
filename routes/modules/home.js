@@ -7,7 +7,8 @@ const Todo = require('../../models/todo')
 
 // 定義首頁路由
 router.get('/', (req, res) => {
-  Todo.find()
+  const userId = req.user._id
+  Todo.find({ userId })
     .lean()
     .sort({ _id: 'asc' }) // 根據 _id 升冪排序
     .then(todos => res.render('index', { todos }))
