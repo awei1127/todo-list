@@ -1,9 +1,8 @@
-// 引用 Express 與 Express 路由器
 const express = require('express')
 const router = express.Router()
 const User = require('../../models/user')
-// 引用 passport
 const passport = require('passport')
+const bcrypt = require('bcryptjs')
 
 // 定義路由
 // 登入頁面
@@ -53,12 +52,15 @@ router.post('/register', (req, res) => {
       errors.push({
         message: '這個 Email 已經註冊過了。'
       })
-      res.render('register', { errors, username, email, password, confirmPassword })
-    } else {
-      return User.create({ username, email, password })
-        .then(() => res.redirect('/'))
-        .catch(error => console.log(error))
+      return res.render('register', { errors, username, email, password, confirmPassword })
     }
+
+    return bcrypt
+      .genSalt(10)
+      .then(salt => bcrypt.hash(password, salt))
+      .then(hash => User.create({ username, email, password: hash })
+        .then(() => res.redirect('/'))
+        .catch(error => console.log(error)))
   })
 })
 
