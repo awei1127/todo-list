@@ -27,10 +27,33 @@ router.get('/register', (req, res) => {
 // 送出註冊資訊
 router.post('/register', (req, res) => {
   const { username, email, password, confirmPassword } = req.body
+
+  // 建立用來儲存錯誤訊息的陣列
+  const errors = []
+  // 只要有任一空欄就推入錯誤訊息
+  if (!username || !email || !password || !confirmPassword) {
+    errors.push({
+      message: '所有欄位都是必填。'
+    })
+  }
+  // 密碼與確認密碼不一致時推入錯誤訊息
+  if (password !== confirmPassword) {
+    errors.push({
+      message: '密碼與確認密碼不一致。'
+    })
+  }
+  // 有空欄或確認密碼不同時把使用者擋在register畫面，不去mongoDB找資料。
+  if (errors.length) {
+    return res.render('register', { errors, username, email, password, confirmPassword })
+  }
+
   User.findOne({ email: email }).then(user => {
     if (user) {
-      console.log('already exists.')
-      res.render('register', { username, email, password, confirmPassword })
+      // 帳號已存在時推入錯誤訊息
+      errors.push({
+        message: '這個 Email 已經註冊過了。'
+      })
+      res.render('register', { errors, username, email, password, confirmPassword })
     } else {
       return User.create({ username, email, password })
         .then(() => res.redirect('/'))
@@ -42,6 +65,7 @@ router.post('/register', (req, res) => {
 // 登出請求
 router.get('/logout', (req, res) => {
   req.logout()
+  req.flash('success_msg', '你已經成功登出。')
   res.redirect('/users/login')
 })
 

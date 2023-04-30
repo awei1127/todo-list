@@ -7,6 +7,7 @@ const routes = require('./routes')
 const session = require('express-session')
 // 載入設定檔，要寫在 express-session 以後
 const usePassport = require('./config/passport')
+const flash = require('connect-flash')
 
 //Mongoose 連線設定只需要「被執行」，不需要接到任何回傳參數繼續利用，所以這裡不需要再設定變數。
 require('./config/mongoose')
@@ -23,11 +24,13 @@ app.use(session({
 // 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
 usePassport(app)
 
+app.use(flash())
 // 把參數放到res.locals以提供給渲染畫面用
 app.use((req, res, next) => {
-  console.log(req.user)
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 app.use(routes)
