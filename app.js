@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const port = 3000
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const routes = require('./routes')
@@ -9,15 +8,22 @@ const session = require('express-session')
 const usePassport = require('./config/passport')
 const flash = require('connect-flash')
 
+// 僅在非正式環境時, 使用 dotenv
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 //Mongoose 連線設定只需要「被執行」，不需要接到任何回傳參數繼續利用，所以這裡不需要再設定變數。
 require('./config/mongoose')
+
+const PORT = process.env.PORT
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
@@ -37,6 +43,6 @@ app.use(routes)
 
 
 // 執行並監聽
-app.listen(port, () => {
-  console.log(`Express server is listening on http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`Express server is listening on http://localhost:${PORT}`)
 })

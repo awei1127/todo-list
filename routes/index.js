@@ -11,6 +11,8 @@ const todos = require('./modules/todos')
 // 引入路由模組：引入 users 模組程式碼
 const users = require('./modules/users')
 
+const auth = require('./modules/auth')
+
 // 引入驗證用中介軟體
 const { authenticator } = require('../middleware/auth')
 
@@ -19,6 +21,8 @@ router.use('/todos', authenticator, todos)
 
 // 將網址結構符合 /users 字串開頭的 request 導向 users 模組 
 router.use('/users', users)
+
+router.use('/auth', auth)
 
 // 將網址結構符合 / 字串的 request 導向 home 模組 
 router.use('/', authenticator, home)
